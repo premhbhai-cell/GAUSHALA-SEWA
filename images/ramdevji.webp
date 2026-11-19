@@ -1,0 +1,19 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/webp" href="https://pub-a8a30eff0f1a4d1f8ac9dacf813ff592.r2.dev/images/Logo.webp" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="preconnect" href="https://pub-d7d0316b6f5a427b953ccde81b89d13a.r2.dev" crossorigin />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <title>Gau Seva Dham</title>
+    <script async src="https://checkout.razorpay.com/v1/checkout.js"></script>
+    <script type="module" crossorigin src="/assets/index-BaMN1bGs.js"></script>
+    <link rel="modulepreload" crossorigin href="/assets/rolldown-runtime-hePW80VL.js">
+    <link rel="modulepreload" crossorigin href="/assets/jsx-runtime-CXpGZU1z.js">
+    <link rel="stylesheet" crossorigin href="/assets/index-BXcc-SOd.css">
+  </head>
+  <body>
+    <div id="root"></div>
+  </body>
+</html>
