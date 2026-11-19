@@ -1,15 +1,8 @@
-SHREEKRISHNA KANHAIYA GAUSHALA — ADMIN PANEL (sirf JS, koi server nahi)
+SHREEKRISHNA KANHAIYA GAUSHALA — ADMIN PANEL
 
-Admin kholne ke liye:  /admin.html   (ya site ke footer me chhota "Admin Login" link)
+Admin: /admin.html. Sign in with the server-configured admin email/password.
+Pages: edit page text, images, blocks, links and layout. Scanner, Links & Contact: update QR, UPI, contact, bank details and banners. Media Library: upload and manage images.
 
-Menus:
- - Pages (Edit)  : har page ka text/image edit, block delete/duplicate/move, nayi text/image add, link badalna
- - Scanner, Links & Contact : QR scanner image, UPI ID, payment link, Facebook/Instagram/YouTube/X links,
-                    helpline numbers, WhatsApp, email, address, bank details, home banner slide 2 & 3
- - Media Library : image upload / delete
- - GitHub Settings : ek baar repo + token daalein (Contents: Read & write) taaki Save sabko live dikhe
+Donation flow: original donation form remains. Donor enters details and selects Donate Now; the existing modal switches to QR + bank details. It must not open a second form over the payment screen.
 
-GitHub connect nahi hai to changes sirf usi browser me dikhte hain.
-GitHub connect hone par Save -> content/*.json (aur images/uploads/) repo me jata hai, hosting ~1 min me live kar deti hai.
-
-Social links abhi blank hain (icon dikhta hai, link nahi khulta). Admin me link daalte hi chalu ho jayenge.
+Cross-device saving is implemented through the Cloudflare Worker in cloudflare-worker/. Complete the one-time setup in CLOUD-ADMIN-SETUP.txt before using the cloud admin. GitHub credentials are server-side only; the admin panel does not ask users to connect GitHub.

@@ -14,7 +14,7 @@ function isAbs(u){return /^(data:|https?:|\/|blob:)/.test(u)}
 /* ---- settings ---- */
 var S=null;
 if(adm()){try{S=JSON.parse(ls('cms_settings')||'null')}catch(e){}}
-if(!S)S=getJSON('content/settings.json')||{};
+if(!S)S=getJSON('content/settings.json')||{upi:'shreekrishna88@idfcbank',qr:'images/qr.webp',address:'Gaushala, 75, Mayapur Ruppur Badshibag, Behat (Saharanpur), Saharanpur, Behat, Uttar Pradesh, India, 247121',bank:{name:'IDFC FIRST',branch:'SAHARANPUR - AMBALA ROAD BRANCH',account:'62307202680',ifsc:'IDFB0021693',swift:'IDFBINBBMUM',holder:'SHREEKRISHNA KANHAIYA GAUSHALA SEWA ASSOCIATION'}};
 w.CMS_SETTINGS=S;
 
 /* ---- page override (admin ne edit kiya ho to) ---- */
@@ -40,7 +40,7 @@ function applySettings(){
   if(wa){add('919991774444',wa);add('9991774444',wa.slice(-10))}
   add('9253196127',p1);add('9671711162',p2);
   add('charity.gausevadham@gmail.com',(S.email||'').trim());
-  add('Keela No.18, Khata No. 654/744, Near Karman Border Hodal, SHREEKRISHNA KANHAIYA GAUSHALA SEWA ASSOCIATION, Hodal, Palwal, Haryana - 121106',(S.address||'').trim());
+  add('Keela No.18, Khata No. 654/744, Near Karman Border, Hodal, Palwal, Haryana - 121106',(S.address||'Gaushala, 75, Mayapur Ruppur Badshibag, Behat (Saharanpur), Saharanpur, Behat, Uttar Pradesh, India, 247121').trim());
   add('50100026133002',(B.account||'').trim());add('HDFC0001734',(B.ifsc||'').trim());add('HDFC Bank',(B.name||'').trim());
   if(P.length){
     var rep=function(s){for(var i=0;i<P.length;i++)s=s.split(P[i][0]).join(P[i][1]);return s};
@@ -51,7 +51,18 @@ function applySettings(){
   }
   if(B.branch){
     [].forEach.call(d.querySelectorAll('.gsd-bank-row-body'),function(r){var h=r.querySelector('h4'),p=r.querySelector('p');if(h&&p&&/^branch$/i.test(h.textContent.trim()))p.textContent=B.branch});
-    [].forEach.call(d.querySelectorAll('.footer-bank-details li'),function(li){var s=li.querySelector('strong');if(s&&/^branch$/i.test(s.textContent.trim())&&li.lastChild)li.lastChild.nodeValue=' – '+B.branch});
+    [].forEach.call(d.querySelectorAll('.footer-bank-details li'),function(li){var h=li.querySelector('strong');if(h&&/^branch$/i.test(h.textContent.trim())&&li.lastChild)li.lastChild.nodeValue=' – '+B.branch});
+  }
+  /* Keep bank details consistent on every page that displays the bank card. */
+  if(B.swift||B.holder){
+    var rows=d.querySelector('.gsd-bank-rows');
+    if(rows){
+      var vals={'Account Holder':B.holder||'SHREEKRISHNA KANHAIYA GAUSHALA SEWA ASSOCIATION','SWIFT Code':B.swift||'IDFBINBBMUM'};
+      Object.keys(vals).forEach(function(label){
+        var found=[].some.call(rows.querySelectorAll('.gsd-bank-row-body'),function(r){var h=r.querySelector('h4'),p=r.querySelector('p');if(h&&p&&h.textContent.trim().toLowerCase()===label.toLowerCase()){p.textContent=vals[label];return true}return false});
+        if(!found){var row=d.createElement('div');row.className='gsd-bank-row';row.innerHTML='<span class="gsd-bank-row-icon"></span><div class="gsd-bank-row-body"><h4>'+label+'</h4><p>'+vals[label]+'</p></div>';rows.appendChild(row)}
+      });
+    }
   }
   if(S.qr){var q=isAbs(S.qr)?S.qr:ROOT+S.qr;[].forEach.call(d.querySelectorAll('img[src$="qr.webp"]'),function(i){i.src=q})}
   var so=S.social||{};
@@ -64,7 +75,7 @@ function ld(src,cb){var s=d.createElement('script');s.src=ROOT+src;s.onload=cb;d
 function ready(){
   if(ed){
     var st=d.createElement('style');st.className='cms-ui';st.textContent='.skg-rv{opacity:1!important;transform:none!important}.gsd-bn-wrapper,.razorpay-container,.gsd-lang,.nav-dropdown-panel{display:none!important}';d.head.appendChild(st);
-    ld('scripts/cms-core.js',function(){ld('scripts/editor.js')});
+    ld('scripts/cms-config.js',function(){ld('scripts/cms-core.js',function(){ld('scripts/editor.js')})});
   }else{
     function hdr(){
       var label=adm()?'ADMIN PANEL':'ADMIN LOGIN';
