@@ -147,3 +147,43 @@
 @media(max-width:1300px){.cms-hdr-desk{display:none!important}}
 .cms-hdr-mobile{display:flex;margin:12px 16px;padding:11px 14px;font-size:14px}
 @media(min-width:1301px){.cms-hdr-mobile{display:none!important}}
+
+
+/* MOBILE HEADER LOGO VISIBILITY FIX — Nov 2026 */
+@media (max-width: 600px) {
+  .gsd-nav-demo .navbar-wrap { min-height: 138px !important; height: 138px !important; }
+  .gsd-nav-demo .navbar { min-height: 138px !important; height: 138px !important; }
+  .gsd-nav-demo .brand {
+    min-width: 0 !important;
+    width: auto !important;
+    max-width: 68vw !important;
+    gap: 0 !important;
+  }
+  .gsd-nav-demo .logo-shell {
+    display: flex !important;
+    width: auto !important;
+    height: auto !important;
+    min-width: 0 !important;
+    max-width: 68vw !important;
+    align-items: center !important;
+    justify-content: center !important;
+  }
+  .gsd-nav-demo .logo-shell img {
+    display: block !important;
+    width: auto !important;
+    height: 72px !important;
+    max-width: min(68vw, 220px) !important;
+    max-height: 72px !important;
+    object-fit: contain !important;
+    object-position: center !important;
+  }
+}
+@media (max-width: 380px) {
+  .gsd-nav-demo .navbar-wrap,
+  .gsd-nav-demo .navbar { min-height: 126px !important; height: 126px !important; }
+  .gsd-nav-demo .logo-shell img {
+    height: 64px !important;
+    max-height: 64px !important;
+    max-width: min(64vw, 190px) !important;
+  }
+}
