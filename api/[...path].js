@@ -35,6 +35,7 @@ function requireAdmin(req,res) {
   return true;
 }
 async function gh(path, options={}) {
+  if(!token()||!owner()||!repo()){const e=new Error('GitHub setup baaki hai: Vercel me GITHUB_TOKEN, GITHUB_OWNER aur GITHUB_REPO add karke Redeploy karein.');e.status=503;e.missingGithub=true;throw e;}
   const r=await fetch(`${GH_API}/repos/${owner()}/${repo()}/contents/${path}`,{
     ...options, headers:{'Authorization':`Bearer ${token()}`,'Accept':'application/vnd.github+json','X-GitHub-Api-Version':'2022-11-28',...(options.headers||{})}
   });
@@ -82,7 +83,7 @@ module.exports = async (req,res) => {
         let obj={};try{obj=JSON.parse(decoded)}catch{}
         obj=type==='settings'?fixSettings(obj):fixPage(obj);
         return res.status(200).setHeader('Cache-Control','public, max-age=30, stale-while-revalidate=60').json(obj);
-      } catch(e) { if(e.status===404) return res.status(200).setHeader('Cache-Control','no-store').json({}); throw e; }
+      } catch(e) { if(e.status===404||e.missingGithub) return res.status(200).setHeader('Cache-Control','no-store').json({}); throw e; }
     }
     if(!requireAdmin(req,res)) return;
     if(route==='pages' && req.method==='GET') {

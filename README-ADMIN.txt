@@ -66,3 +66,9 @@ LOGO / FAVICON / ADDRESS
 - Header and footer use images/Logo.png everywhere. Favicon files (favicon.png, favicon-32.png, favicon.ico, apple-touch-icon.png) are made from the same logo.
 - Registered address used everywhere: Gaushala, 75, Mayapur Ruppur Badshibag, Behat (Saharanpur), Saharanpur, Behat, Uttar Pradesh, India, 247121
 - Older edits already saved in GitHub (content/cms/*.json) are cleaned automatically by lib/legacy-fix.js when pages are served, so the old logo and old Hodal address cannot return.
+
+ADMIN PANEL ON MOBILE
+- Dashboard, Pages list, Media and Scanner/Links screens now load on phones, tablets and desktops. Pages show as tap-friendly cards on mobile.
+- If GitHub variables are missing the panel still opens and shows a red notice: "GitHub setup baaki hai". Add GITHUB_TOKEN, GITHUB_OWNER, GITHUB_REPO in Vercel, then Redeploy.
+- Page editing opens inside the panel (Pages -> Edit). Tap text to type, tap a block to select it, use the top toolbar (scroll it sideways on a phone) and press Save.
+- Never commit VERCEL-ENV-PASTE.txt or any password/token file to GitHub.
