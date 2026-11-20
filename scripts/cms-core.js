@@ -15,7 +15,7 @@ var CMS=w.CMS={prev:{},ROOT:ROOT,
  save:function(p,html){return req('page?p='+encodeURIComponent(p),{method:'PUT',body:JSON.stringify({html:html})})},
  revert:function(p){return req('page?p='+encodeURIComponent(p),{method:'DELETE'})},
  media:function(){return Promise.all([req('media-list').catch(function(){return[]}),fetch(ROOT+'media.json').then(function(r){return r.ok?r.json():[]}).catch(function(){return[]})]).then(function(v){return v[0].concat((v[1]||[]).map(function(u){return{url:u,up:false}}))})},
- upload:function(name,data){return req('media',{method:'POST',body:JSON.stringify({name:name,data:data})})},
+ upload:function(name,data){return req('media',{method:'POST',body:JSON.stringify({name:name,data:data})}).then(function(j){if(j&&j.url)CMS.prev[j.url]=data;return j})},
  pagesEdited:function(){return req('pages')}
 };
 w.api=function(u,o){
