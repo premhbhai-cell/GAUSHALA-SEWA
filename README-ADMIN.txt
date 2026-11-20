@@ -44,3 +44,10 @@ NOTES
 - Uploaded images are resized by the existing editor before upload. Vercel request-size limits still apply.
 - A successful save response confirms the GitHub write, not completion of Vercel deployment.
 - Old unsynced localStorage drafts are not automatically imported.
+
+TROUBLESHOOTING LOGIN HTTP 500
+- Check Vercel -> Project -> Deployments -> latest deployment -> Functions/Runtime Logs.
+- Confirm api/login.js, api/me.js, api/logout.js and lib/admin-auth.js exist at the repository root.
+- Confirm ADMIN_EMAIL, ADMIN_PASSWORD and SESSION_SECRET are set for Production, then redeploy.
+- Open /api/me in a browser: expected response before login is HTTP 401 with {"error":"Not logged in"}.
+- If /api/me itself is HTTP 500, the function deployment/runtime logs contain the exact reason.

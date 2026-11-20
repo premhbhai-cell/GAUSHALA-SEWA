@@ -3,7 +3,7 @@
 var ROOT=w.CMS_ROOT||'', API='/api';
 function req(path,opt){
  opt=opt||{};opt.credentials='same-origin';opt.headers=Object.assign({'Content-Type':'application/json'},opt.headers||{});
- return fetch(API+'/'+path,opt).then(function(r){return r.json().catch(function(){return{}}).then(function(j){if(!r.ok)throw{error:j.error||('Request failed '+r.status)};return j})});
+ return fetch(API+'/'+path,opt).then(function(r){return r.text().then(function(raw){var j={};try{j=raw?JSON.parse(raw):{}}catch(e){j={error:raw.slice(0,240)||('HTTP '+r.status)}}if(!r.ok)throw{error:j.error||('Request failed '+r.status)};return j})});
 }
 var CMS=w.CMS={prev:{},ROOT:ROOT,
  abs:function(u){if(/^worker-media:/.test(u))return '/uploads/cms/'+encodeURIComponent(u.slice(13));return /^(data:|https?:|\/|blob:)/.test(u)?u:ROOT+u},
