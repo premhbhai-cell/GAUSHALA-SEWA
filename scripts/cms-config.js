@@ -1,2 +1,2 @@
-/* Set this to your deployed Cloudflare Worker URL (no trailing slash). */
-window.CMS_API_BASE = window.CMS_API_BASE || 'https://YOUR-GAUSHALA-ADMIN.WORKERS.DEV';
+/* Set this to the deployed Cloudflare Worker URL (no trailing slash). */
+window.CMS_WORKER_URL = 'https://YOUR-WORKER-NAME.YOUR-SUBDOMAIN.workers.dev';

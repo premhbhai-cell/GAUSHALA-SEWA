@@ -44,7 +44,7 @@ d.getElementById('cx').onclick=function(){m.style.display='none'};
 d.getElementById('cf').onchange=function(){var f=this.files[0];if(!f)return;shrink(f,function(data){S('Uploading...');api('/api/upload',{method:'POST',body:JSON.stringify({name:f.name,data:data})}).then(function(j){m.style.display='none';cb2(j.url)}).catch(function(e){alert(e.error||'Upload fail')})})};
 var cb2=function(u){setImg(u)};
 bar.onclick=function(e){var a=e.target.dataset.a;if(!a)return;
- if(a=='save'){S('Saving...');api('/api/page?p='+pg,{method:'PUT',body:JSON.stringify({html:clean(false),local:clean(true)})}).then(function(){dirty=0;S('✔ Saved — cloud par publish ho raha hai; live site par kuch minute mein dikhega.')}).catch(function(x){S('Error: '+(x.error||'save nahi hua'))})}
+ if(a=='save'){S('Saving...');api('/api/page?p='+pg,{method:'PUT',body:JSON.stringify({html:clean(false),local:clean(true)})}).then(function(){dirty=0;S(CMS.cfg()?'✔ Saved — GitHub par gaya, ~1 minute me live site par dikhega':'✔ Saved (sirf is browser me). Sabko dikhane ke liye Admin → GitHub Settings connect karein')}).catch(function(x){S('Error: '+(x.error||'save nahi hua'))})}
  else if(a=='exit'){if(!dirty||confirm('Unsaved changes hain. Bahar nikle?'))parent.postMessage('cms-exit','*')}
  else if(a=='rev'){if(confirm('Is page ke saare changes hata kar original design wapas laayein?'))api('/api/page?p='+pg,{method:'DELETE'}).then(function(){location.reload()})}
  else if(a=='img'){if(!img)return alert('Pehle kisi image par click karein');cb2=setImg;pick(function(u){setImg(u)})}

@@ -110,22 +110,12 @@ function donate(){
     if(!nm){ $('#skg-name',el).focus(); return; } if(!amt||amt<1){ $('#skg-cust',el).focus(); return; }
     var msg='Namaste, I want to donate ₹'+amt+' ('+(freq==='once'?'one time':'monthly')+') to '+S.short+'.\nName: '+nm+'\nMobile: '+mob+'\n80G: '+g80;
     var box=$('.skg-modal',el);
-    var bankHtml='<div class="skg-bank-details" style="max-width:560px;margin:18px auto 0;padding:16px;text-align:left;background:#f7f5ef;border:1px solid #e7dfce;border-radius:12px;display:grid;grid-template-columns:1fr 1fr;gap:10px;font-size:13px;overflow-wrap:anywhere">'+
-    '<div><small>Account Holder</small><br><b>SHREEKRISHNA KANHAIYA GAUSHALA SEWA ASSOCIATION</b></div>'+
-    '<div><small>Account Number</small><br><b>62307202680</b></div>'+
-    '<div><small>IFSC</small><br><b>IDFB0021693</b></div>'+
-    '<div><small>SWIFT Code</small><br><b>IDFBINBBMUM</b></div>'+
-    '<div><small>Bank</small><br><b>IDFC FIRST</b></div>'+
-    '<div><small>Branch</small><br><b>SAHARANPUR - AMBALA ROAD BRANCH</b></div></div>'+
-    '<p style="max-width:560px;margin:10px auto;font-size:12px;line-height:1.6">Registered Address: Gaushala, 75, Mayapur Ruppur Badshibag, Behat (Saharanpur), Saharanpur, Behat, Uttar Pradesh, India, 247121</p>';
-  box.innerHTML='<button class="skg-x" aria-label="Close">&times;</button><div class="skg-pay"><h3>Thank you, '+nm.replace(/</g,'')+' 🙏</h3><p>Donation: <b>₹'+amt.toLocaleString('en-IN')+'</b> — scan the QR or pay to UPI <b>'+S.upi+'</b></p><img src="'+(/^(data:|https?:)/.test(S.qr)?S.qr:ROOT+S.qr)+'" alt="UPI QR" onerror="this.style.display=\'none\'">'+bankHtml+(S.payLink?'<a class="skg-go" target="_blank" rel="noopener" href="'+S.payLink+'">Pay online</a>':'')+'<a class="skg-go" target="_blank" rel="noopener" href="https://wa.me/'+S.whatsapp+'?text='+encodeURIComponent(msg)+'">Send details on WhatsApp</a></div>';
-
+    box.innerHTML='<button class="skg-x" aria-label="Close">&times;</button><div class="skg-pay"><h3>Thank you, '+nm.replace(/</g,'')+' 🙏</h3><p>Donation: <b>₹'+amt.toLocaleString('en-IN')+'</b> — scan the QR or pay to UPI <b>'+S.upi+'</b></p><img src="'+(/^(data:|https?:)/.test(S.qr)?S.qr:ROOT+S.qr)+'" alt="UPI QR" onerror="this.style.display=\'none\'">'+(S.payLink?'<a class="skg-go" target="_blank" rel="noopener" href="'+S.payLink+'">Pay online</a>':'')+'<a class="skg-go" target="_blank" rel="noopener" href="https://wa.me/'+S.whatsapp+'?text='+encodeURIComponent(msg)+'">Send details on WhatsApp</a><a class="skg-ghost" href="'+ROOT+'pages/bank_details.html">View bank details</a></div>';
   };
 }
 document.addEventListener('click',function(e){
   var t=e.target.closest('button,a,[role="button"]'); if(!t)return;
-  /* Never re-open donation flow from any control inside the existing donation modal. */
-  if(t.closest('.skg-overlay,.skg-modal,.skg-pay') || t.id==='skg-go')return;
+  if(t.closest('.skg-overlay'))return;
   var txt=(t.textContent||'').trim();
   if(/watch our story/i.test(txt)){ e.preventDefault(); watchStory(); return; }
   if(/^donate(\s|$|\s*now|\s*for)/i.test(txt)&&!/kind/i.test(txt)){ var href=t.getAttribute('href'); if(!href||href==='#'||t.tagName==='BUTTON'){ e.preventDefault(); closeMenu(); donate(); } }
