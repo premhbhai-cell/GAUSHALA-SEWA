@@ -1,0 +1,10 @@
+# Vercel -> Project -> Settings -> Environment Variables
+# Click the first "Key" box and PASTE this whole block (Vercel splits it into separate variables).
+# Edit the 4 lines marked CHANGE_ME first. Environments: tick Production (and Preview). Then Redeploy.
+ADMIN_EMAIL=Shrikrishanakanhaiyagaushal@gmail.com
+ADMIN_PASSWORD=CHANGE_ME_your_admin_password
+SESSION_SECRET=xXWYBNLFSEKp7T0pI6Fpfnz9AjyIOLUsfEUVIfSm3L4r9Jgz2bcLDiBnQU1_4Dnh
+GITHUB_TOKEN=CHANGE_ME_github_fine_grained_token
+GITHUB_OWNER=CHANGE_ME_github_username
+GITHUB_REPO=CHANGE_ME_repository_name
+GITHUB_BRANCH=main

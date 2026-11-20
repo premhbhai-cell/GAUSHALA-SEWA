@@ -1,4 +1,4 @@
-SHREEKRISHNA KANHAIYA GAUSHALA — ADMIN PANEL (GITHUB + VERCEL)
+SHRI KRISHNA KANHAIYA GAUSHALA SEVA — ADMIN PANEL (GITHUB + VERCEL)
 
 The original website pages, design, CSS, JavaScript, images and URL structure are retained.
 The Cloudflare Worker/KV dependency has been replaced with Vercel Serverless API routes.

@@ -1,7 +1,7 @@
 /* ===== SITE CONFIG – apni details yahan badlo ===== */
 window.SITE = {
-  name: 'SHREEKRISHNA KANHAIYA GAUSHALA SEWA ASSOCIATION',
-  short: 'Shreekrishna Kanhaiya Gaushala',
+  name: 'SHRI KRISHNA KANHAIYA GAUSHALA SEVA',
+  short: 'Shri Krishna Kanhaiya Gaushala Seva',
   phone: '+919991774444',          // calls
   whatsapp: '919991774444',        // wa.me number (without +)
   email: 'info@example.com',
