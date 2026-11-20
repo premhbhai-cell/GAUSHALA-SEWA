@@ -72,3 +72,13 @@ ADMIN PANEL ON MOBILE
 - If GitHub variables are missing the panel still opens and shows a red notice: "GitHub setup baaki hai". Add GITHUB_TOKEN, GITHUB_OWNER, GITHUB_REPO in Vercel, then Redeploy.
 - Page editing opens inside the panel (Pages -> Edit). Tap text to type, tap a block to select it, use the top toolbar (scroll it sideways on a phone) and press Save.
 - Never commit VERCEL-ENV-PASTE.txt or any password/token file to GitHub.
+
+
+SAVE NAHI HO RAHA? (SELF-CHECK)
+1. Open https://YOUR-SITE/api/health?deep=1
+   - "github": "OK ..."  -> save kaam karega.
+   - "github": "FAIL ..." -> message me exact wajah likhi hai (token galat / repo galat / branch galat / write permission nahi).
+2. api/ folder me ye files honi chahiye (har endpoint ki apni file, [...path].js ab use nahi hoti - delete kar dein):
+   content.js health.js login.js logout.js me.js media.js media-file.js media-list.js page.js pages.js settings.js
+   Aur lib/cms-api.js, lib/admin-auth.js, lib/legacy-fix.js. (Total 11 functions - Vercel Hobby limit 12.)
+3. Environment variables badalne ke baad hamesha Redeploy karein.

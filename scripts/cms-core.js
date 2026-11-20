@@ -3,7 +3,7 @@
 var ROOT=w.CMS_ROOT||'', API='/api';
 function req(path,opt){
  opt=opt||{};opt.credentials='same-origin';opt.headers=Object.assign({'Content-Type':'application/json'},opt.headers||{});
- return fetch(API+'/'+path,opt).then(function(r){return r.text().then(function(raw){var j={};try{j=raw?JSON.parse(raw):{}}catch(e){j={error:raw.slice(0,240)||('HTTP '+r.status)}}if(!r.ok)throw{error:j.error||('Request failed '+r.status)};return j})});
+ return fetch(API+'/'+path,opt).then(function(r){return r.text().then(function(raw){var j={};try{j=raw?JSON.parse(raw):{}}catch(e){j={error:(r.status==404?'Server API file nahi mili (404). api/ folder ki saari files GitHub repo me push hui hain? ':r.status==413?'Data bahut bada hai (413). Badi image chhoti karke try karein. ':r.status>=500?'Server error ('+r.status+'): ':'')+raw.replace(/<[^>]*>/g,' ').trim().slice(0,200)}}if(!r.ok)throw{error:j.error||('Request failed '+r.status)};return j})});
 }
 var CMS=w.CMS={prev:{},ROOT:ROOT,
  abs:function(u){if(/^worker-media:/.test(u))return '/uploads/cms/'+encodeURIComponent(u.slice(13));return /^(data:|https?:|\/|blob:)/.test(u)?u:ROOT+u},
