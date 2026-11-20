@@ -1,17 +1,19 @@
 const crypto = require('crypto');
+const { env } = require('../lib/admin-auth');
+const { fixPage, fixSettings } = require('../lib/legacy-fix');
 
 const COOKIE = 'gaushala_admin';
 const GH_API = 'https://api.github.com';
-const owner = () => process.env.GITHUB_OWNER;
-const repo = () => process.env.GITHUB_REPO;
-const branch = () => process.env.GITHUB_BRANCH || 'main';
-const token = () => process.env.GITHUB_TOKEN;
+const owner = () => env('GITHUB_OWNER');
+const repo = () => env('GITHUB_REPO');
+const branch = () => env('GITHUB_BRANCH') || 'main';
+const token = () => env('GITHUB_TOKEN');
 
 function send(res, status, data, extra={}) {
   res.status(status).set({...extra, 'Cache-Control':'no-store'}).json(data);
 }
 function sign(value) {
-  return crypto.createHmac('sha256', process.env.SESSION_SECRET).update(value).digest('base64url');
+  return crypto.createHmac('sha256', env('SESSION_SECRET')).update(value).digest('base64url');
 }
 function makeSession(email) {
   const payload = Buffer.from(JSON.stringify({email, exp:Date.now()+7*24*60*60*1000})).toString('base64url');
@@ -26,7 +28,7 @@ function validSession(req) {
   const expected = sign(payload);
   const a=Buffer.from(signature), b=Buffer.from(expected);
   if (a.length!==b.length || !crypto.timingSafeEqual(a,b)) return false;
-  try { const p=JSON.parse(Buffer.from(payload,'base64url').toString()); return p.exp>Date.now() && p.email===process.env.ADMIN_EMAIL; } catch { return false; }
+  try { const p=JSON.parse(Buffer.from(payload,'base64url').toString()); return p.exp>Date.now() && p.email===env('ADMIN_EMAIL').toLowerCase(); } catch { return false; }
 }
 function requireAdmin(req,res) {
   if (!validSession(req)) { send(res,401,{error:'Login required. Please log in again.'}); return false; }
@@ -55,9 +57,9 @@ module.exports = async (req,res) => {
     if (route==='login' && req.method==='POST') {
       const email=String(req.body?.email||'').trim().toLowerCase();
       const password=String(req.body?.password||'');
-      const adminEmail=String(process.env.ADMIN_EMAIL||'').trim().toLowerCase();
-      const adminPassword=String(process.env.ADMIN_PASSWORD||'');
-      if(!adminEmail||!adminPassword||!process.env.SESSION_SECRET) return send(res,503,{error:'Admin environment variables are not configured.'});
+      const adminEmail=env('ADMIN_EMAIL').toLowerCase();
+      const adminPassword=env('ADMIN_PASSWORD');
+      if(!adminEmail||!adminPassword||!env('SESSION_SECRET')) return send(res,503,{error:'Admin environment variables are not configured.'});
       const pa=Buffer.from(password), pb=Buffer.from(adminPassword);
       const passOk=pa.length===pb.length && crypto.timingSafeEqual(pa,pb);
       if(email!==adminEmail || !passOk) return send(res,401,{error:'Email ya password galat hai.'});
@@ -77,7 +79,9 @@ module.exports = async (req,res) => {
       try {
         const result=await gh(file);
         const decoded=Buffer.from(result.content.replace(/\n/g,''),'base64').toString('utf8');
-        return res.status(200).setHeader('Cache-Control','public, max-age=30, stale-while-revalidate=60').send(decoded);
+        let obj={};try{obj=JSON.parse(decoded)}catch{}
+        obj=type==='settings'?fixSettings(obj):fixPage(obj);
+        return res.status(200).setHeader('Cache-Control','public, max-age=30, stale-while-revalidate=60').json(obj);
       } catch(e) { if(e.status===404) return res.status(200).setHeader('Cache-Control','no-store').json({}); throw e; }
     }
     if(!requireAdmin(req,res)) return;
@@ -107,7 +111,7 @@ module.exports = async (req,res) => {
       return send(res,200,{ok:true});
     }
     if(route==='settings' && req.method==='GET') {
-      try {const f=await gh('content/cms/settings.json');return res.status(200).send(Buffer.from(f.content.replace(/\n/g,''),'base64').toString())}
+      try {const f=await gh('content/cms/settings.json');let o={};try{o=JSON.parse(Buffer.from(f.content.replace(/\n/g,''),'base64').toString())}catch{};return send(res,200,fixSettings(o))}
       catch(e){if(e.status===404)return send(res,200,{});throw e;}
     }
     if(route==='settings' && req.method==='PUT') {

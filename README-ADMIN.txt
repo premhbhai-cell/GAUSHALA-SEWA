@@ -51,3 +51,18 @@ TROUBLESHOOTING LOGIN HTTP 500
 - Confirm ADMIN_EMAIL, ADMIN_PASSWORD and SESSION_SECRET are set for Production, then redeploy.
 - Open /api/me in a browser: expected response before login is HTTP 401 with {"error":"Not logged in"}.
 - If /api/me itself is HTTP 500, the function deployment/runtime logs contain the exact reason.
+
+
+LOGIN SHOWS "Vercel setup incomplete / variable(s) set nahi hain"  (HTTP 503)
+This means the running Vercel deployment cannot see ADMIN_EMAIL, ADMIN_PASSWORD or SESSION_SECRET. The code is fine; the variables are missing for that deployment.
+1. Vercel -> your project -> Settings -> Environment Variables.
+2. Add the three names EXACTLY (capital letters, underscores, no spaces). Tick Production (and Preview if you use preview URLs).
+3. Deployments -> latest -> three dots -> Redeploy. Variables added AFTER a deployment never reach that deployment.
+4. Open https://YOUR-SITE/api/health . It must show "loginReady": true. For saving edits it must also show "saveReady": true.
+   (It prints only true/false, never your password or token.)
+5. Log in with the exact ADMIN_EMAIL and ADMIN_PASSWORD you stored in Vercel.
+
+LOGO / FAVICON / ADDRESS
+- Header and footer use images/Logo.png everywhere. Favicon files (favicon.png, favicon-32.png, favicon.ico, apple-touch-icon.png) are made from the same logo.
+- Registered address used everywhere: Gaushala, 75, Mayapur Ruppur Badshibag, Behat (Saharanpur), Saharanpur, Behat, Uttar Pradesh, India, 247121
+- Older edits already saved in GitHub (content/cms/*.json) are cleaned automatically by lib/legacy-fix.js when pages are served, so the old logo and old Hodal address cannot return.
