@@ -1,34 +1,46 @@
-SHREEKRISHNA KANHAIYA GAUSHALA — ADMIN PANEL
+SHREEKRISHNA KANHAIYA GAUSHALA — ADMIN PANEL (GITHUB + VERCEL)
 
-Admin page: /admin.html
+The original website pages, design, CSS, JavaScript, images and URL structure are retained.
+The Cloudflare Worker/KV dependency has been replaced with Vercel Serverless API routes.
+Authentication uses an HttpOnly, Secure, SameSite=Lax signed session cookie. The server checks
+the cookie for every protected request. localStorage is NOT used as an authentication store.
 
-Shared login + shared edits require the Cloudflare Worker backend included in this ZIP. After the one-time setup, the same admin email/password works on every phone, laptop and browser. Page edits, site settings and uploaded media are stored centrally in Cloudflare KV. GitHub connection/token is NOT required; the editor will not ask to connect GitHub.
+PERMANENT SAVING
+- Page overrides: content/cms/pages/<page-id>.json
+- Site-wide settings: content/cms/settings.json
+- Uploaded images: uploads/cms/
+- Each save/upload creates a commit in the same GitHub repository.
+- Existing Vercel Git integration deploys the repository commit.
+- Public pages load shared content from /api/content, so all visitors see the same saved edits.
+- No GitHub connect button, browser token entry, Cloudflare Worker or Cloudflare URL is needed.
 
-ONE-TIME CLOUDFLARE SETUP
-1) Install Node.js, then run: npm install -g wrangler
-2) In this project folder run: npx wrangler login
-3) Create shared storage: npx wrangler kv namespace create GAUSHALA_CMS
-4) Copy the returned namespace id into wrangler.toml, replacing PASTE_YOUR_KV_NAMESPACE_ID_HERE.
-5) Set the admin email:
-   npx wrangler secret put ADMIN_EMAIL
-   Enter the email address you want to use (the email shown on your existing login screen can be used).
-6) Create a strong new admin password and generate its PBKDF2 hash. In the project terminal run this Node command, replacing YOUR_NEW_PASSWORD:
-   node -e "const c=require('crypto');const p='YOUR_NEW_PASSWORD';const s=c.randomBytes(16);console.log('SALT='+s.toString('hex'));console.log('HASH='+c.pbkdf2Sync(p,s,310000,32,'sha256').toString('hex'));"
-   Copy the printed SALT and HASH values. Set each as a Cloudflare secret:
-   npx wrangler secret put ADMIN_PASSWORD_SALT
-   npx wrangler secret put ADMIN_PASSWORD_HASH
-7) Set a long random signing secret:
-   npx wrangler secret put AUTH_SECRET
-   Enter a unique random value of at least 32 characters.
-8) Deploy: npx wrangler deploy
-9) Copy the Worker URL shown after deployment into scripts/cms-config.js:
-   window.CMS_WORKER_URL = 'https://YOUR-WORKER-NAME.YOUR-SUBDOMAIN.workers.dev';
-10) Upload/push the updated website files to your existing hosting.
+ONE-TIME VERCEL ENVIRONMENT VARIABLES
+In the existing Vercel project, Settings -> Environment Variables, add:
 
-After deployment, open https://YOUR-DOMAIN/admin.html and log in using ADMIN_EMAIL and the new password. Repeat login on each device; all saved content syncs automatically.
+ADMIN_EMAIL       One admin email address
+ADMIN_PASSWORD    A strong unique admin password
+SESSION_SECRET    Random secret, minimum 32 characters
+GITHUB_TOKEN      Fine-grained GitHub token with Contents: Read and write access
+GITHUB_OWNER      GitHub account or organization owning the repository
+GITHUB_REPO       Exact repository name, without .git
+GITHUB_BRANCH     Existing Vercel deployment branch (usually main)
+
+Create the fine-grained token in GitHub Settings -> Developer settings -> Fine-grained personal
+access tokens. Restrict it to this one website repository and grant Contents: Read and write.
+Do not put the token, password or session secret in any frontend file or commit them to GitHub.
+
+DEPLOYMENT
+1. Push this updated project to the SAME GitHub repository and branch already connected to Vercel.
+2. Add all seven environment variables above to the existing Vercel project.
+3. Redeploy after adding the environment variables.
+4. Visit https://YOUR-EXISTING-DOMAIN/admin.html and log in with ADMIN_EMAIL and ADMIN_PASSWORD.
+5. Edit a page or site settings and click Save. A successful save creates a GitHub commit.
+6. Vercel must finish its deployment before the updated static page is visible publicly.
+7. Use the same login credentials on every device/browser.
 
 NOTES
-- Worker KV stores CMS page overrides, settings and uploaded image data. The original website design/assets remain in this repository.
-- Existing browser-only CMS drafts are not automatically imported. Save/export any important unsynced edits before switching.
-- Cloudflare Worker and KV must remain deployed for admin login and shared editing to work.
-- Never publish ADMIN_PASSWORD_HASH, ADMIN_PASSWORD_SALT or AUTH_SECRET. They belong only in Cloudflare Worker Secrets.
+- This ZIP cannot configure your Vercel account or GitHub repository remotely. The one-time env vars and push are required.
+- The GitHub token is stored only in Vercel server-side environment variables.
+- Uploaded images are resized by the existing editor before upload. Vercel request-size limits still apply.
+- A successful save response confirms the GitHub write, not completion of Vercel deployment.
+- Old unsynced localStorage drafts are not automatically imported.
