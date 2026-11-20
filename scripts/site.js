@@ -139,46 +139,27 @@ var statEls=[]; $$('*').forEach(function(el){ if(el.children.length<=6&&/years o
 var statsHost=null; $$('div').forEach(function(d){ if(!statsHost&&/years of seva/i.test(d.textContent)&&/in care every day/i.test(d.textContent)&&d.textContent.length<200) statsHost=d; });
 // narrow to the innermost container holding all 4
 function inner(d){ var k=[].slice.call(d.children).filter(function(c){return /years of seva|in care every day/i.test(c.textContent)}); return k.length===1?inner(k[0]):d; }
-if(statsHost&&!CMS_EDIT){ statsHost=inner(statsHost); var io=new IntersectionObserver(function(es){ es.forEach(function(e){ if(e.isIntersecting){ countUp(statsHost); io.disconnect(); } }); },{threshold:.35}); io.observe(statsHost); }
+if(statsHost&&!CMS_EDIT){ statsHost=inner(statsHost);
+  // Current association figures supplied by the Gaushala team.
+  var statRules=[[/years of seva/i,'2+'],[/animals treated/i,'80+'],[/doctors/i,'5'],[/in care every day|animals treated daily/i,'10–20']];
+  statRules.forEach(function(rule){ var label=[].slice.call(statsHost.querySelectorAll('*')).find(function(el){return el.children.length===0&&rule[0].test(el.textContent)}); if(label){var wrap=label.parentElement; var num=wrap&&wrap.querySelector('strong,b,[class*=num],[class*=value]'); if(num)num.textContent=rule[1]; else {var prev=label.previousElementSibling;if(prev)prev.textContent=rule[1];}} });
+  var io=new IntersectionObserver(function(es){ es.forEach(function(e){ if(e.isIntersecting){ countUp(statsHost); io.disconnect(); } }); },{threshold:.35}); io.observe(statsHost); }
 
-/* ---------- STORIES THAT MOVE (video carousel) ---------- */
+/* ---------- STORIES THAT MOVE (all supplied WhatsApp videos) ---------- */
 var stage=$('.gsd-video-stage');
 if(stage&&!CMS_EDIT){
-  var cards=$$('.gsd-video-card',stage), cnt=$('.gsd-video-count'), N=cards.length, act=0;
-  var POSTERS=['seva-by-deviji.webp','hosp2.webp','b1hospital.webp','rescueimg2.webp','welfare2.webp'].map(function(f){return ROOT+'images/'+f});
-  var allowPlay=false;
-  var pre=cards.map(function(c,i){ return {html:c.innerHTML}; });
-  var title=cards.map(function(c){ var p=$('.gsd-video-card-title',c); return p?p.textContent:(c.querySelector('video')?c.querySelector('video').title:''); });
-  function layout(){
-    cards.forEach(function(c,i){
-      var d=i-act; if(d>N/2)d-=N; if(d<-N/2)d+=N; var a=Math.abs(d);
-      var tx=(d<0?-1:1)*[0,47,80,100][Math.min(a,3)], sc=[1,.82,.64,.5][Math.min(a,3)], op=[1,.68,.22,0][Math.min(a,3)];
-      c.style.transform='translate(-50%,-50%) translateX('+tx+'%) scale('+sc+')'; c.style.opacity=op; c.style.zIndex=10-a*3; c.style.pointerEvents=a>2?'none':'auto';
-      var on=i===act; c.classList.toggle('gsd-video-card-active',on);
-      var v=$('video',c);
-      if(on){ if(!v){ c.innerHTML='<video src="'+S.videoBase+S.videos[i%S.videos.length]+'.mp4" poster="'+POSTERS[i%POSTERS.length]+'" title="'+title[i].replace(/"/g,'')+'" controls playsinline preload="metadata" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;background:#111"></video><span class="gsd-video-card-shine" aria-hidden="true"></span>'; v=$('video',c); v.addEventListener('ended',function(){ setAct(act+1) }); }
-        if(allowPlay){ var pr=v.play&&v.play(); if(pr&&pr.catch)pr.catch(function(){}); } }
-      else if(v){ v.pause(); c.innerHTML=pre[i].html||''; if(!$('.gsd-video-card-title',c)&&title[i])c.insertAdjacentHTML('afterbegin',''); }
-    });
-    if(cnt)cnt.textContent=('0'+(act+1)).slice(-2)+' / '+('0'+N).slice(-2);
-  }
-  function setAct(n){ allowPlay=true; act=(n+N)%N; layout(); }
-  cards.forEach(function(c,i){ c.addEventListener('click',function(){ if(i!==act)setAct(i); }); });
-  var pv=$('[aria-label="Previous video"]'), nx=$('[aria-label="Next video"]');
-  if(pv)pv.onclick=function(){setAct(act-1)}; if(nx)nx.onclick=function(){setAct(act+1)};
-  // first video: keep original element, just position cards
-  var firstVid=$('video',cards[0]); if(firstVid){ firstVid.poster=POSTERS[0]; firstVid.preload='metadata'; firstVid.addEventListener('ended',function(){setAct(act+1)}); try{firstVid.pause();firstVid.currentTime=0}catch(e){} }
-  pre[0].html=cards[0].innerHTML;
-  cards.forEach(function(c,i){ if(i!==0&&!pre[i].html)pre[i].html=c.innerHTML; });
-  // poster fallback for card 0 when it later becomes inactive
-  pre[0].html='<div style="position:absolute;inset:0;background:#17130e"><img alt="" src="'+POSTERS[0]+'" style="width:100%;height:100%;object-fit:cover" onerror="this.remove()"><span style="position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:58px;height:58px;border-radius:50%;display:grid;place-items:center;color:#fff;background:#E0A800">▶</span></div><p class="gsd-video-card-title">'+title[0]+'</p><span class="gsd-video-card-shine"></span>';
+  var mediaDir=ROOT+'images/new-brand-media/';
+  var videoFiles=['gaushala-seva-video-01.mp4','gaushala-seva-video-02.mp4','gaushala-seva-video-03.mp4','gaushala-seva-video-04.mp4','gaushala-seva-video-05.mp4','gaushala-seva-video-06.mp4','gaushala-seva-video-07.mp4','gaushala-seva-video-08.mp4','gaushala-seva-video-09.mp4','gaushala-seva-video-10.mp4','gaushala-seva-video-11.mp4','gaushala-seva-video-12.mp4','gaushala-seva-video-13.mp4','gaushala-seva-video-14.mp4'];
+  var photoFiles=['gaushala-photo-01.jpg','gaushala-photo-02.jpg','gaushala-photo-03.jpg','gaushala-photo-04.jpg','gaushala-photo-05.jpg','gaushala-photo-06.jpg','gaushala-photo-07.jpg','gaushala-photo-08.jpg','gaushala-photo-09.jpg','gaushala-photo-10.jpg','gaushala-photo-11.jpg','gaushala-photo-12.jpg','gaushala-photo-13.jpg','gaushala-photo-14.jpg','gaushala-photo-15.jpg'];
+  var cnt=$('.gsd-video-count'), N=videoFiles.length, act=0, allowPlay=false, cards=[];
+  stage.innerHTML='';
+  videoFiles.forEach(function(file,i){var c=document.createElement('div');c.className='gsd-video-card';c.innerHTML='<div style="position:absolute;inset:0;background:#17130e"><img alt="" aria-hidden="true" src="'+mediaDir+photoFiles[i%photoFiles.length]+'" style="width:100%;height:100%;object-fit:cover"><span style="position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:58px;height:58px;border-radius:50%;display:grid;place-items:center;color:#fff;background:rgba(166,67,15,.9)">▶</span></div><p class="gsd-video-card-title">Gaushala Seva Story '+(i+1)+'</p><span class="gsd-video-card-shine" aria-hidden="true"></span>';stage.appendChild(c);cards.push(c);});
+  function layout(){cards.forEach(function(c,i){var d=i-act;if(d>N/2)d-=N;if(d<-N/2)d+=N;var a=Math.abs(d);var tx=(d<0?-1:1)*[0,47,80,100][Math.min(a,3)],sc=[1,.82,.64,.5][Math.min(a,3)],op=[1,.68,.22,0][Math.min(a,3)];c.style.transform='translate(-50%,-50%) translateX('+tx+'%) scale('+sc+')';c.style.opacity=op;c.style.zIndex=10-a*3;c.style.pointerEvents=a>2?'none':'auto';c.classList.toggle('gsd-video-card-active',i===act);var v=$('video',c);if(i===act){if(!v){c.innerHTML='<video src="'+mediaDir+videoFiles[i]+'" poster="'+mediaDir+photoFiles[i%photoFiles.length]+'" title="Gaushala Seva Story '+(i+1)+'" controls playsinline preload="metadata" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;background:#111"></video><span class="gsd-video-card-shine" aria-hidden="true"></span>';v=$('video',c);v.addEventListener('ended',function(){setAct(act+1)});}if(allowPlay){var pr=v.play();if(pr&&pr.catch)pr.catch(function(){});}}else if(v){v.pause();c.innerHTML='<div style="position:absolute;inset:0;background:#17130e"><img alt="" aria-hidden="true" src="'+mediaDir+photoFiles[i%photoFiles.length]+'" style="width:100%;height:100%;object-fit:cover"><span style="position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:58px;height:58px;border-radius:50%;display:grid;place-items:center;color:#fff;background:rgba(166,67,15,.9)">▶</span></div><p class="gsd-video-card-title">Gaushala Seva Story '+(i+1)+'</p><span class="gsd-video-card-shine" aria-hidden="true"></span>';}});if(cnt)cnt.textContent=('0'+(act+1)).slice(-2)+' / '+('0'+N).slice(-2);}
+  function setAct(n){allowPlay=true;act=(n+N)%N;layout();}
+  cards.forEach(function(c,i){c.addEventListener('click',function(){if(i!==act)setAct(i);});});
+  var pv=$('[aria-label="Previous video"]'),nx=$('[aria-label="Next video"]');if(pv)pv.onclick=function(){setAct(act-1)};if(nx)nx.onclick=function(){setAct(act+1)};
   layout();
-  if('IntersectionObserver' in window){
-    var io=new IntersectionObserver(function(es){ es.forEach(function(e){
-      if(e.isIntersecting&&!allowPlay){ allowPlay=true; var v=$('video',cards[act]); if(v){ var pr=v.play(); if(pr&&pr.catch)pr.catch(function(){}); } io.disconnect(); }
-    }); },{threshold:.6});
-    io.observe(stage);
-  }
+  if('IntersectionObserver' in window){var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting&&!allowPlay){allowPlay=true;layout();io.disconnect();}});},{threshold:.6});io.observe(stage);}
 }
 
 /* ---------- TESTIMONIALS (supporter pills) ---------- */

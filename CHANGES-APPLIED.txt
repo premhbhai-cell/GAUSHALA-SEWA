@@ -1,0 +1,16 @@
+SHRI KRISHNA KANHAIYA GAUSHALA SEWA ASSOCIATION - WEBSITE UPDATE
+
+Applied:
+- Updated brand name and location across the site.
+- Updated key public figures to 2 years of seva, 80+ animals treated, 5 doctors/caretakers, and 10-20 daily treatments.
+- Replaced content photography, banners, gallery photos and old editorial images with the supplied WhatsApp photos.
+- Added all 14 supplied WhatsApp videos to the local media folder and the video gallery; replaced previous embedded video sources with local media.
+- Removed/hid the old founder/devotional and testimonial sections marked in the supplied screenshots.
+- Removed the outdated hospital progress feature marked for removal on the facilities page.
+- Preserved logo, decorative lotus/section styling assets, icons, payment assets, and the existing site navigation/features.
+
+Location:
+Mayapur, Rooppur (Badshaibagh), Tehsil Behat, District Saharanpur, Uttar Pradesh 247122
+
+Note:
+No new phone number or email address was supplied in the change instructions, so existing contact numbers have not been guessed or replaced.
