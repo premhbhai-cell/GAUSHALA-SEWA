@@ -88,6 +88,8 @@ function modal(html,cls){ var o=document.createElement('div'); o.className='skg-
 function watchStory(){ modal('<div class="skg-video"><iframe src="'+S.watchVideo+'" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen></iframe></div>','skg-wide'); }
 
 function donate(){
+  /* Prevent a second donation form from opening over the QR/bank-details step. */
+  if(document.querySelector('.skg-overlay')) return;
   var amt=1100, freq='recurring', g80='No';
   var m=modal(
    '<div class="skg-head"><img src="'+ROOT+'images/Logo.png" alt=""><div><h3>Donate to '+S.short+'</h3><p>Just a few details to get started</p></div></div>'+
@@ -105,11 +107,15 @@ function donate(){
   $('#skg-cust',el).oninput=function(){ this.value=this.value.replace(/\D/g,''); $$('.skg-amts button',el).forEach(function(x){x.classList.remove('on')}); setAmt(+this.value||0); };
   $('#skg-mob',el).oninput=function(){ this.value=this.value.replace(/\D/g,''); $('#skg-e1',el).style.display=this.value.length===10?'none':'block'; };
   go.onclick=function(){
+    if(go.dataset.submitting==='1') return;
     var mob=$('#skg-mob',el).value, nm=$('#skg-name',el).value.trim();
     if(mob.length!==10){ $('#skg-e1',el).style.display='block'; $('#skg-mob',el).focus(); return; }
     if(!nm){ $('#skg-name',el).focus(); return; } if(!amt||amt<1){ $('#skg-cust',el).focus(); return; }
+    go.dataset.submitting='1';
+    go.disabled=true;
     var msg='Namaste, I want to donate ₹'+amt+' ('+(freq==='once'?'one time':'monthly')+') to '+S.short+'.\nName: '+nm+'\nMobile: '+mob+'\n80G: '+g80;
     var box=$('.skg-modal',el);
+    box.classList.add('skg-payment-step');
     box.innerHTML='<button class="skg-x" aria-label="Close">&times;</button><div class="skg-pay"><h3>Thank you, '+nm.replace(/</g,'')+' 🙏</h3><p>Donation: <b>₹'+amt.toLocaleString('en-IN')+'</b> — scan the QR or pay to UPI <b>'+S.upi+'</b></p><img src="'+(/^(data:|https?:)/.test(S.qr)?S.qr:ROOT+S.qr)+'" alt="UPI QR" onerror="this.style.display=\'none\'">'+(S.payLink?'<a class="skg-go" target="_blank" rel="noopener" href="'+S.payLink+'">Pay online</a>':'')+'<a class="skg-go" target="_blank" rel="noopener" href="https://wa.me/'+S.whatsapp+'?text='+encodeURIComponent(msg)+'">Send details on WhatsApp</a><a class="skg-ghost" href="'+ROOT+'pages/bank_details.html">View bank details</a></div>';
   };
 }
